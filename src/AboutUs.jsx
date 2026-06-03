@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+
 function AboutUs() {
   return (
     <div className="about-us">
@@ -8,4 +9,5 @@ function AboutUs() {
     </div>
   );
 }
+
 export default AboutUs;
