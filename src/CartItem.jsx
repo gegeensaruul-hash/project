@@ -5,7 +5,22 @@ import { removeItem, updateQuantity } from './CartSlice';
 function CartItem({ onContinueShopping }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
-  const totalCost = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const calculateTotalAmount = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  };
+
+  const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+  };
+
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem(item.name));
+    }
+  };
 
   return (
     <div style={{ padding: '20px' }}>
@@ -20,15 +35,15 @@ function CartItem({ onContinueShopping }) {
               <h3>{item.name}</h3>
               <p>${item.price}</p>
             </div>
-            <button onClick={() => dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }))}>-</button>
+            <button onClick={() => handleDecrement(item)}>-</button>
             <span>{item.quantity}</span>
-            <button onClick={() => dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }))}>+</button>
+            <button onClick={() => handleIncrement(item)}>+</button>
             <p><strong>${(item.price * item.quantity).toFixed(2)}</strong></p>
             <button onClick={() => dispatch(removeItem(item.name))} style={{ color: 'red', cursor: 'pointer' }}>Remove</button>
           </div>
         ))
       )}
-      <h3>Total: ${totalCost.toFixed(2)}</h3>
+      <h3>Total: ${calculateTotalAmount()}</h3>
       <button onClick={onContinueShopping} style={{ padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '20px', cursor: 'pointer' }}>
         Continue Shopping
       </button>
